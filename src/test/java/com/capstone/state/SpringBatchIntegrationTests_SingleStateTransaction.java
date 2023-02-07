@@ -95,12 +95,16 @@ public class SpringBatchIntegrationTests_SingleStateTransaction {
 
         // Match job names
         Assertions.assertEquals("exportSingleStateJob", actualJobInstance.getJobName());
+
         // Match job exit status to "COMPLETED"
         Assertions.assertEquals("COMPLETED", actualJobExitStatus.getExitCode());
+
         // Verify input file is valid and can be read
-        Assertions.assertTrue(FileUtil.canReadFile(testOutputFileExpected));
-        // Verify output (expected) file is valid and can be read
         Assertions.assertTrue(FileUtil.canReadFile(testInputFile));
+
+        // Verify output (expected) file is valid and can be read
+        Assertions.assertTrue(FileUtil.canReadFile(testOutputFileExpected));
+
         // Verify output (actual) file is valid and can be read
         Assertions.assertTrue(FileUtil.canReadFile(testOutputFileActual));
 
