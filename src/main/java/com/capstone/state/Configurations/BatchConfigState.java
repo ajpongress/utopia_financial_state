@@ -42,7 +42,8 @@ public class BatchConfigState {
     private SynchronizedItemStreamWriter<StateModel> xmlWriter;
 
     @Autowired
-    private TaskExecutor taskExecutor;
+    @Qualifier("taskExecutor_State")
+    private org.springframework.core.task.TaskExecutor asyncTaskExecutor;
 
 
 
@@ -68,7 +69,7 @@ public class BatchConfigState {
                         return StepExecutionListener.super.afterStep(stepExecution);
                     }
                 })
-                .taskExecutor(taskExecutor)
+                .taskExecutor(asyncTaskExecutor)
                 .build();
     }
 

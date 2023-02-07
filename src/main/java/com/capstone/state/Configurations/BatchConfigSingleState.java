@@ -43,7 +43,8 @@ public class BatchConfigSingleState {
     private ClassifierCompositeItemWriter<StateTransactionModel> classifierCompositeItemWriter;
 
     @Autowired
-    private TaskExecutor taskExecutor;
+    @Qualifier("taskExecutor_State")
+    private org.springframework.core.task.TaskExecutor asyncTaskExecutor;
 
     @Autowired
     private StateTransactionClassifier stateTransactionClassifier;
@@ -73,7 +74,7 @@ public class BatchConfigSingleState {
                         return StepExecutionListener.super.afterStep(stepExecution);
                     }
                 })
-                .taskExecutor(taskExecutor)
+                .taskExecutor(asyncTaskExecutor)
                 .build();
     }
 
