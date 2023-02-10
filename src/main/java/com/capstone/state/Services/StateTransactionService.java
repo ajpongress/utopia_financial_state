@@ -44,6 +44,7 @@ public class StateTransactionService {
         }
 
         return new JobParametersBuilder()
+                .addLong("time.Started", System.currentTimeMillis())
                 .addString("file.input", pathInput)
                 .addString("outputPath_param", pathOutput)
                 .toJobParameters();
@@ -58,6 +59,7 @@ public class StateTransactionService {
         }
 
         return new JobParametersBuilder()
+                .addLong("time.Started", System.currentTimeMillis())
                 .addString("stateID_param", stateID)
                 .addString("file.input", pathInput)
                 .addString("outputPath_param", pathOutput)
