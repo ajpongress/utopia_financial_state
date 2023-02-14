@@ -17,12 +17,14 @@ public class AllStatesProcessor implements ItemProcessor<StateTransactionModel, 
 
     private final HashMap<Long, String> stateTransactionMap = new HashMap<>();
 
-    // Useful for additional jobs or steps
-    public void clearMap() {
-        stateTransactionMap.clear();
-    }
-
     private static long transactionIdCounter = 0;
+
+    // Useful for additional jobs or steps
+    public void clearAllTrackersAndCounters() {
+
+        stateTransactionMap.clear();
+        transactionIdCounter = 0;
+    }
 
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --

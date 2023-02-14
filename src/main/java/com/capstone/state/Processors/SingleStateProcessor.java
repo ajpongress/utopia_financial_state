@@ -22,6 +22,12 @@ public class SingleStateProcessor implements ItemProcessor<StateTransactionModel
 
     private static long transactionIdCounter = 0;
 
+    // Useful for additional jobs or steps
+    public void clearAllTrackersAndCounters() {
+
+        transactionIdCounter = 0;
+    }
+
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --
     // ----------------------------------------------------------------------------------

@@ -27,6 +27,13 @@ public class StateProcessor implements ItemProcessor<StateModel, StateModel> {
 
     private static long idCounter = 0;
 
+    // Useful for additional jobs or steps
+    public void clearAllTrackersAndCounters() {
+
+        stateTracker.clear();
+        idCounter = 0;
+    }
+
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --
     // ----------------------------------------------------------------------------------
