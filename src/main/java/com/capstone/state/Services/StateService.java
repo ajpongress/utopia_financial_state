@@ -1,5 +1,7 @@
 package com.capstone.state.Services;
 
+import com.capstone.state.Configurations.BatchConfigAllStates;
+import com.capstone.state.Configurations.BatchConfigSingleState;
 import com.capstone.state.Configurations.BatchConfigState;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -29,9 +31,15 @@ public class StateService {
     JobLauncher jobLauncher;
 
     @Autowired
+    BatchConfigAllStates batchConfigAllStates;
+
+    @Autowired
+    BatchConfigSingleState batchConfigSingleState;
+
+    @Autowired
     BatchConfigState batchConfigState;
 
-    private JobParameters buildJobParameters_State(String pathInput, String pathOutput) {
+    private JobParameters buildJobParameters_States(String pathInput, String pathOutput) {
 
         // Check if source file.input is valid
         File file = new File(pathInput);
@@ -46,17 +54,85 @@ public class StateService {
                 .toJobParameters();
     }
 
+    private JobParameters buildJobParameters_SingleState(String stateID, String pathInput, String pathOutput) {
+
+        // Check if source file.input is valid
+        File file = new File(pathInput);
+        if (!file.exists()) {
+            throw new ItemStreamException("Requested source doesn't exist");
+        }
+
+        return new JobParametersBuilder()
+                .addLong("time.Started", System.currentTimeMillis())
+                .addString("stateID_param", stateID)
+                .addString("file.input", pathInput)
+                .addString("outputPath_param", pathOutput)
+                .toJobParameters();
+    }
 
 
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --
     // ----------------------------------------------------------------------------------
 
-    // generate card numbers
+    // Export all states
+    public ResponseEntity<String> exportAllStates(String pathInput, String pathOutput) {
+
+        try {
+            JobParameters jobParameters = buildJobParameters_States(pathInput, pathOutput);
+            jobLauncher.run(batchConfigAllStates.job_exportAllStates(), jobParameters);
+
+        } catch (BeanCreationException e) {
+            return new ResponseEntity<>("Bean creation had an error. Job halted.", HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Requested source doesn't exist", HttpStatus.BAD_REQUEST);
+        } catch (JobExecutionAlreadyRunningException e) {
+            return new ResponseEntity<>("Job execution already running", HttpStatus.BAD_REQUEST);
+        } catch (JobRestartException e) {
+            return new ResponseEntity<>("Job restart exception", HttpStatus.BAD_REQUEST);
+        } catch (JobInstanceAlreadyCompleteException e) {
+            return new ResponseEntity<>("Job already completed", HttpStatus.BAD_REQUEST);
+        } catch (JobParametersInvalidException e) {
+            return new ResponseEntity<>("Job parameters are invalid", HttpStatus.BAD_REQUEST);
+        }
+
+        // Job successfully ran
+        return new ResponseEntity<>("Job parameters OK. Job Completed", HttpStatus.CREATED);
+    }
+
+
+    // Export a specific state
+    public ResponseEntity<String> exportSingleState(String stateID, String pathInput, String pathOutput) {
+
+        try {
+            JobParameters jobParameters = buildJobParameters_SingleState(stateID, pathInput, pathOutput);
+            jobLauncher.run(batchConfigSingleState.job_exportSingleState(), jobParameters);
+
+        } catch (BeanCreationException e) {
+            return new ResponseEntity<>("Bean creation had an error. Job halted.", HttpStatus.BAD_REQUEST);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("State ID format invalid", HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Requested source doesn't exist", HttpStatus.BAD_REQUEST);
+        } catch (JobExecutionAlreadyRunningException e) {
+            return new ResponseEntity<>("Job execution already running", HttpStatus.BAD_REQUEST);
+        } catch (JobRestartException e) {
+            return new ResponseEntity<>("Job restart exception", HttpStatus.BAD_REQUEST);
+        } catch (JobInstanceAlreadyCompleteException e) {
+            return new ResponseEntity<>("Job already completed", HttpStatus.BAD_REQUEST);
+        } catch (JobParametersInvalidException e) {
+            return new ResponseEntity<>("Job parameters are invalid", HttpStatus.BAD_REQUEST);
+        }
+
+        // Job successfully ran
+        return new ResponseEntity<>("Job parameters OK. Job Completed", HttpStatus.CREATED);
+    }
+
+    // generate state data
     public ResponseEntity<String> generateStates(String pathInput, String pathOutput) {
 
         try {
-            JobParameters jobParameters = buildJobParameters_State(pathInput, pathOutput);
+            JobParameters jobParameters = buildJobParameters_States(pathInput, pathOutput);
             jobLauncher.run(batchConfigState.job_generateStates(), jobParameters);
 
         } catch (BeanCreationException e) {
