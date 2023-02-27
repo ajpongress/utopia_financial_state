@@ -15,7 +15,11 @@ public class StateController {
     // --                                  SETUP                                       --
     // ----------------------------------------------------------------------------------
 
+    private static String reportsPath;
 
+    public static String getReportsPath() {
+        return reportsPath;
+    }
 
     @Autowired
     StateService stateService;
@@ -49,5 +53,11 @@ public class StateController {
         return stateService.generateStates(source, destination);
     }
 
+    // Export top 5 transaction counts by zip code
+    @GetMapping("/states/top5zipcodes")
+    public ResponseEntity<String> top5ZipCodesAPI(@RequestParam String source, @RequestParam String reports_destination) {
 
+        reportsPath = reports_destination;
+        return stateService.exportTop5ZipCodes(source);
+    }
 }
