@@ -58,6 +58,6 @@ public class StateController {
     public ResponseEntity<String> top5ZipCodesAPI(@RequestParam String source, @RequestParam String reports_destination) {
 
         reportsPath = reports_destination;
-        return stateService.exportTop5ZipCodes(source);
+        return stateService.exportTop5ZipCodes(source, reports_destination);
     }
 }

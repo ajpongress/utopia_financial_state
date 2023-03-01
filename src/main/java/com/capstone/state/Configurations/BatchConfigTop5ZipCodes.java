@@ -4,6 +4,7 @@ import com.capstone.state.Classifiers.StateTransactionClassifier;
 import com.capstone.state.Controllers.StateController;
 import com.capstone.state.Listeners.CustomChunkListener;
 import com.capstone.state.Models.StateTransactionModel;
+import com.capstone.state.PathHandlers.ReportsPathHandler;
 import com.capstone.state.Processors.AllStatesProcessor;
 import com.capstone.state.Processors.Top5ZipCodesProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,9 @@ public class BatchConfigTop5ZipCodes {
     @Qualifier("taskExecutor_State")
     private org.springframework.core.task.TaskExecutor asyncTaskExecutor;
 
+    @Autowired
+    private ReportsPathHandler reportsPathHandler;
+
 //    @Autowired
 //    private StateTransactionClassifier stateTransactionClassifier;
 
@@ -78,8 +82,9 @@ public class BatchConfigTop5ZipCodes {
                     public ExitStatus afterStep(StepExecution stepExecution) {
 
                         // Create reports file using reports file path from Controller API call
-                        String filePath = StateController.getReportsPath();
-                        File top5ZipCodesReport = new File(filePath);
+//                        String filePath = StateController.getReportsPath();
+//                        File top5ZipCodesReport = new File(filePath);
+                        File top5ZipCodesReport = new File(reportsPathHandler.getReportsPath());
 
                         Map<String, Long> top5ZipCodesMap = top5ZipCodesProcessor.getZipCodesMap();
 

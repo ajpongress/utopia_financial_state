@@ -78,7 +78,7 @@ public class StateService {
 
     // ----------------------------------------------------------------------------------
 
-    private JobParameters buildJobParameters_StatesReportOnly(String pathInput) {
+    private JobParameters buildJobParameters_StatesReportOnly(String pathInput, String reports_destination) {
 
         // Check if source file.input is valid
         File file = new File(pathInput);
@@ -89,6 +89,7 @@ public class StateService {
         return new JobParametersBuilder()
                 .addLong("time.Started", System.currentTimeMillis())
                 .addString("file.input", pathInput)
+                .addString("reportsPath_param", reports_destination)
                 .toJobParameters();
     }
 
@@ -181,10 +182,10 @@ public class StateService {
     // ----------------------------------------------------------------------------------
 
     // top 5 zip codes
-    public ResponseEntity<String> exportTop5ZipCodes(String pathInput) {
+    public ResponseEntity<String> exportTop5ZipCodes(String pathInput, String reports_destination) {
 
         try {
-            JobParameters jobParameters = buildJobParameters_StatesReportOnly(pathInput);
+            JobParameters jobParameters = buildJobParameters_StatesReportOnly(pathInput, reports_destination);
             jobLauncher.run(batchConfigTop5ZipCodes.job_exportTop5ZipCodes(), jobParameters);
 
         } catch (BeanCreationException e) {
